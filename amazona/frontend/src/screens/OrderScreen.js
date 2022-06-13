@@ -247,7 +247,7 @@ export default function OrderScreen() {
                 {!order.isPaid && (
                   <ListGroup.Item>
                     {isPending ? (
-                      <LoadingBox></LoadingBox>
+                      <LoadingBox />
                     ) : (
                       <div>
                         <PayPalButtons
