@@ -122,7 +122,7 @@ export default function OrderScreen() {
     } else {
       const loadPaypalScript = async () => {
         const { data: clientId } = await axios.get('/api/keys/paypal', {
-          headers: { authorization: `Bearer ${userInfo.toke}` },
+          headers: { authorization: `Bearer ${userInfo.token}` },
         });
 
         paypalDispatch({
