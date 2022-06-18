@@ -60,7 +60,10 @@ userRouter.put(
       const emailAlreadyExists = await User.findOne({ email: req.body.email });
 
       if (emailAlreadyExists && user.email !== req.body.email) {
-        res.status(422).send({ message: 'This email already exists' });
+        res.status(422).send({
+          message:
+            'This email already exists. Please enter a valid email address',
+        });
         return;
       }
 
