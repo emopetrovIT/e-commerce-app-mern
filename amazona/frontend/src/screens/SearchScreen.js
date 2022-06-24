@@ -43,12 +43,12 @@ const prices = [
     value: '51-200',
   },
   {
-    name: '$201 to $ 10000',
+    name: '$201 to $1000',
     value: '201-1000',
   },
 ];
 
-export const rating = [
+export const ratings = [
   {
     name: '4stars & up',
     rating: 4,
@@ -108,6 +108,7 @@ export default function SearchScreen() {
     const fetchCategories = async () => {
       try {
         const { data } = await axios.get(`/api/products/categories`);
+        setCategories(data);
       } catch (err) {
         toast.error(getError(err));
       }
@@ -122,9 +123,9 @@ export default function SearchScreen() {
     const filterQuery = filter.query || query;
     const filterRating = filter.rating || rating;
     const filterPrice = filter.price || price;
-    const filterOrder = filter.order || order;
+    const sortOrder = filter.order || order;
 
-    return `/search?category=${filterCategory}&query=${filterQuery}&price=${filterPrice}&rating=${filterRating}&order=${filterOrder}&page=${filterPage}`;
+    return `/search?category=${filterCategory}&query=${filterQuery}&price=${filterPrice}&rating=${filterRating}&order=${sortOrder}&page=${filterPage}`;
   };
 
   return (
@@ -145,7 +146,7 @@ export default function SearchScreen() {
                   Any
                 </Link>
               </li>
-              {category.map((c) => {
+              {categories.map((c) => (
                 <li key={c}>
                   <Link
                     className={c === category ? 'text-bold' : ''}
@@ -153,8 +154,8 @@ export default function SearchScreen() {
                   >
                     {c}
                   </Link>
-                </li>;
-              })}
+                </li>
+              ))}
             </ul>
           </div>
           <div>
@@ -168,7 +169,7 @@ export default function SearchScreen() {
                   Any
                 </Link>
               </li>
-              {price.map((p) => (
+              {prices.map((p) => (
                 <li key={p.value}>
                   <Link
                     to={getFilterUrl({ price: p.value })}
@@ -183,7 +184,7 @@ export default function SearchScreen() {
           <div>
             <h3>Avg. Customer Review</h3>
             <ul>
-              {rating.map((r) => (
+              {ratings.map((r) => (
                 <li key={r.name}>
                   <Link
                     to={getFilterUrl({ rating: r.rating })}
@@ -225,7 +226,7 @@ export default function SearchScreen() {
                     price !== 'all' ? (
                       <Button
                         variant="light"
-                        onClick={() => navigate('search')}
+                        onClick={() => navigate('/search')}
                       >
                         <i className="fas fa-times-circle"></i>
                       </Button>
@@ -247,6 +248,9 @@ export default function SearchScreen() {
                   </select>
                 </Col>
               </Row>
+              {products.length === 0 && (
+                <MessageBox>No Product Found</MessageBox>
+              )}
               <Row>
                 {products.map((product) => (
                   <Col sm={6} lg={4} className="mb-3" key={product._id}>
@@ -255,7 +259,7 @@ export default function SearchScreen() {
                 ))}
               </Row>
               <div>
-                {[...Array(pages).keys()].map((x) => {
+                {[...Array(pages).keys()].map((x) => (
                   <LinkContainer
                     key={x + 1}
                     className="mx-1"
@@ -267,8 +271,8 @@ export default function SearchScreen() {
                     >
                       {x + 1}
                     </Button>
-                  </LinkContainer>;
-                })}
+                  </LinkContainer>
+                ))}
               </div>
             </>
           )}
