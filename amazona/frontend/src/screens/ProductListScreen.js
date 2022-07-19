@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useReducer } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Store } from '../Store';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { Link } from 'react-router-dom';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -31,7 +30,7 @@ export default function ProductListScreen() {
     error: '',
   });
 
-  const { search, pathname } = useLocation();
+  const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const page = sp.get('page') || 1;
 
@@ -42,12 +41,14 @@ export default function ProductListScreen() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(`/api/products/admin?page=${page}`, {
-          header: { Authorization: `Bearer ${userInfo.token}` },
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         });
 
-        dispatch({ type: 'FETCH_SUCCESS' });
-      } catch (error) {}
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      } catch (err) {}
     };
+
+    fetchData();
   }, [page, userInfo]);
 
   return (
@@ -59,7 +60,7 @@ export default function ProductListScreen() {
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <>
-          <table>
+          <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
@@ -86,7 +87,7 @@ export default function ProductListScreen() {
               <Link
                 className={x + 1 === Number(page) ? 'btn text-bold' : 'btn'}
                 key={x + 1}
-                to={`/productlist?page=${x + 1}`}
+                to={`/admin/products?page=${x + 1}`}
               >
                 {x + 1}
               </Link>
